@@ -1,0 +1,57 @@
+name: Build and Deploy FeedCord
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - dockerize
+    paths:
+      - "**/*.csproj"
+
+jobs:
+  build_and_deploy:
+    name: Build and Deploy FeedCord
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checkout the repository
+      - uses: actions/checkout@v4
+
+      # Set up .NET Core
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: "7.0.x"
+
+      # Restore dependencies
+      - name: Restore Dependencies
+        run: dotnet restore
+
+      # Build the app
+      - name: Build FeedCord
+        run: dotnet build --configuration Release --no-restore
+
+      # Publish the app
+      - name: Publish FeedCord
+        run: dotnet publish -c Release -o out
+
+      # Set up Docker Buildx
+      - uses: docker/setup-buildx-action@v3
+
+      # Log in to GitHub Container Registry (ghcr.io)
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.REGISTRY_TOKEN }}
+
+      # Build and push Docker image
+      - name: Build and Push Docker Image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./Dockerfile
+          platforms: linux/amd64
+          push: true
+          tags: |
+            ghcr.io/${{ github.repository_owner }}/feedcord:latest
