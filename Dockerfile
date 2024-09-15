@@ -2,13 +2,17 @@
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build-env
 WORKDIR /app
 
-# Copy the project file and restore dependencies
-COPY *.csproj ./
+# Copy the solution file and project file(s)
+COPY FeedCord.sln ./
+COPY FeedCord/*.csproj ./FeedCord/
+
+# Restore dependencies for the project
 RUN dotnet restore
 
-# Copy the rest of the application files and build the app
+# Copy the rest of the source code and build the app
 COPY . ./
-RUN dotnet publish -c Release -o out
+WORKDIR /app/FeedCord
+RUN dotnet publish -c Release -o /app/out
 
 # Create the runtime image
 FROM mcr.microsoft.com/dotnet/runtime:7.0
