@@ -19,10 +19,6 @@ Due to work and relocating, I will be taking a brief pause in development for th
 
 ---
 
-If you wish to show your support to help development
-
-<a href="https://www.buymeacoffee.com/Qolors" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Buy Me A Coffee" height="41" width="174"></a>
-
 ## Quick Setup (Docker)
 
 ![Discord Webhook](https://github.com/Qolors/FeedCord/blob/master/FeedCord/docs/images/webhooks.png)
