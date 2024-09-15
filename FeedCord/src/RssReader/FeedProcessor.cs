@@ -100,13 +100,19 @@ namespace FeedCord.src.RssReader
 
                 if (isSuccess)
                 {
+                    DateTime latestPublishDate;
+
                     if (isYoutube)
                     {
-                        youtubeFeedData[url] = DateTime.Now;
+                        var post = await CheckFeedForUpdatesAsync(url, config.DescriptionLimit);
+                        latestPublishDate = post?.PublishDate ?? DateTime.Now;
+                        youtubeFeedData[url] = latestPublishDate;
                     }
                     else
                     {
-                        rssFeedData[url] = DateTime.Now;
+                        var posts = await CheckRssFeedForUpdatesAsync(url, config.DescriptionLimit);
+                        latestPublishDate = posts?.Max(p => p?.PublishDate) ?? DateTime.Now;
+                        rssFeedData[url] = latestPublishDate;
                     }
 
                     rssFeedErrorTracker[url] = 0;
