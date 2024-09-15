@@ -3,10 +3,6 @@ name: Build and Deploy FeedCord
 on:
   workflow_dispatch:
   push:
-    branches:
-      - dockerize
-    paths:
-      - "**/*.csproj"
 
 jobs:
   build_and_deploy:
