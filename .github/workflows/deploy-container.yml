@@ -31,10 +31,6 @@ jobs:
       - name: Publish FeedCord
         run: dotnet publish -c Release -o out
 
-      # Set the lowercase repository owner as an environment variable
-      - name: Set Lowercase Repo Owner
-        run: echo "REPO_OWNER_LOWERCASE=${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]' >> $GITHUB_ENV
-
       # Set up Docker Buildx
       - uses: docker/setup-buildx-action@v3
 
@@ -54,4 +50,4 @@ jobs:
           platforms: linux/amd64
           push: true
           tags: |
-            ghcr.io/${{ env.REPO_OWNER_LOWERCASE }}/feedcord:latest
+            ghcr.io/kamdzy/feedcord:latest
