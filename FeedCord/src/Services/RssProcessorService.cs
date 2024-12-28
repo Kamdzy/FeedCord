@@ -98,7 +98,8 @@ namespace FeedCord.src.Services
             else
             {
                 title = post.Title;
-                imageLink = await openGraphService.ExtractImageUrl(post.Link) ?? feed.ImageUrl;
+                // Temporary, don't extract images from post url
+                imageLink = feed.ImageUrl;// await openGraphService.ExtractImageUrl(post.Link) ?? feed.ImageUrl;
                 description = StringHelper.StripTags(post.Description ?? string.Empty);
                 link = post.Link ?? string.Empty;
                 subtitle = feed.Title;
