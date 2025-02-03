@@ -21,5 +21,11 @@ WORKDIR /app
 # Copy the compiled app from the build stage
 COPY --from=build-env /app/out .
 
+# Copy the restart script into the container
+COPY restart-first-run.sh /app
+
+# Make the script executable
+RUN chmod +x /app/restart-first-run.sh
+
 # Set the entry point to your application
-ENTRYPOINT ["dotnet", "FeedCord.dll"]
+ENTRYPOINT ["/app/restart-first-run.sh"]
