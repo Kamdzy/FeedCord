@@ -1,6 +1,4 @@
-﻿
-
-namespace FeedCord.src.Common
+﻿namespace FeedCord.Common
 {
     public record Post(
         string Title,
@@ -9,6 +7,7 @@ namespace FeedCord.src.Common
         string Link,
         string Tag,
         DateTime PublishDate,
-        string Author
+        string Author,
+        string[] Labels = null
         );
 }

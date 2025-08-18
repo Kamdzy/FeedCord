@@ -2,152 +2,154 @@
 
 # FeedCord: Self-hosted RSS Reader for Discord
 
-FeedCord is a dead-simple RSS Reader designed to integrate seamlessly with Discord. With just a few configuration steps, you can have a news feed text channel up and running in your server.
+FeedCord is designed to be a 'turn key' automated RSS feed reader with the main focus on Discord Servers. 
+
+Use it for increasing community engagement and activity or just for your own personal use. The combination of FeedCord and Discord's Forum Channels can really shine to make a vibrant news feed featuring gallery-style display alongside custom threads, creating an engaging space for your private community discussions.
+
+### An example of what FeedCord can bring to your server
 
 ---
 
-## 4/25/2024 - A Slight Pause In Development
+![FeedCord Gallery 1](https://github.com/Qolors/FeedCord/blob/master/FeedCord/docs/images/gallery1.png)
 
-Due to work and relocating, I will be taking a brief pause in development for this software. I plan to pick development back up in late June/beginning of July this year. Feel free to open issues, but know that I myself won't be getting to them for some time. I will gladly take pull requests in the meantime. Thanks for the support!
+![FeedCord Gallery 2](https://github.com/Qolors/FeedCord/blob/master/FeedCord/docs/images/gallery2.png)
 
-## Features
+A showing of one channel. Run as many of these as you want!
 
-- **Discord Integration:** Directly send your RSS feed updates to a Discord channel via a webhook.
-- **Ease of Setup:** Configuration is a breeze with a simple JSON file. Just add your Webhook URL & RSS Feeds.
-- **Docker Support:** Deploying with Docker makes your life easier and is highly recommended.
 
 ---
 
-## Quick Setup (Docker)
+## Running FeedCord
 
-![Discord Webhook](https://github.com/Kamdzy/FeedCord/blob/master/FeedCord/docs/images/webhooks.png)
+FeedCord is very simple to get up and running. It only takes a few steps:
 
----
+- Create a Discord Webhook
+- Create and Edit a local file or two
 
-### Setting up appsettings.json
+Provided below is a quick guide to get up and running.
 
-Your `appsettings.json` is a collection of `instances:`
 
-```json
-{
-  "Instances": []
-}
-```
+## Quick Setup
 
-Each webhook gets one `instance`. Here's an example of a single instance:
-
-```json
-{
-  "Id": "Gaming News Channel",
-  "RssUrls": [
-    "https://examplesrssfeed1.com/rss",
-    "https://examplesrssfeed2.com/rss",
-    "https://examplesrssfeed3.com/rss"
-  ],
-  "YoutubeUrls": [""],
-  "DiscordWebhookUrl": "https://discord.com/api/webhooks/...",
-  "RssCheckIntervalMinutes": 3,
-  "EnableAutoRemove": true,
-  "Color": 8411391,
-  "DescriptionLimit": 200,
-  "Forum": true
-}
-```
-
-Here is an appsettings.json example of running two webhooks for two different channels:
+### 1. Create a new folder with a new file named `appsettings.json` inside with the following content:
 
 ```json
 {
   "Instances": [
     {
-      "Id": "Gaming News Channel",
-      "Username": "Gaming News",
-      "RssUrls": [
-        "https://examplesrssfeed1.com/rss",
-        "https://examplesrssfeed2.com/rss",
-        "https://examplesrssfeed3.com/rss"
+      "Id": "My First News Feed",
+      "YoutubeUrls": [
+        ""
       ],
-      "YoutubeUrls": [""],
-      "DiscordWebhookUrl": "https://discord.com/api/webhooks/...",
-      "RssCheckIntervalMinutes": 3,
-      "EnableAutoRemove": true,
-      "Color": 8411391,
-      "DescriptionLimit": 200,
-      "Forum": true
-    },
-    {
-      "Id": "Tech News Channel",
-      "Username": "Tech News",
       "RssUrls": [
-        "https://examplesrssfeed4.com/rss",
-        "https://examplesrssfeed5.com/rss",
-        "https://examplesrssfeed6.com/rss"
+        ""
       ],
-      "YoutubeUrls": [""],
-      "DiscordWebhookUrl": "https://discord.com/api/webhooks/...",
-      "RssCheckIntervalMinutes": 3,
-      "EnableAutoRemove": true,
+      "Forum": false,
+      "DiscordWebhookUrl": "...",
+      "RssCheckIntervalMinutes": 25,
+      "EnableAutoRemove": false,
       "Color": 8411391,
-      "DescriptionLimit": 200,
-      "Forum": true
+      "DescriptionLimit": 250,
+      "MarkdownFormat": false,
+      "PersistenceOnShutdown": true
     }
-  ]
+  ],
+  "ConcurrentRequests": 40
 }
 ```
-
-There are more optional properties to configure. You can view all properties and their purpose [here](https://github.com/Kamdzy/FeedCord/blob/master/FeedCord/docs/reference.md)
+There is currently 17 properties you can configure. You can read more in depth explanation of the file structure as well as view all properties and their purpose [here](https://github.com/Qolors/FeedCord/blob/master/FeedCord/docs/reference.md)
 
 ---
 
-### Setting up docker-compose.yaml
+### 2. Create a new Webhook in Discord (Visual Steps Provided)
 
-Your `docker-compose.yaml` will look be set up like this:
+![Discord Webhook](https://github.com/Kamdzy/FeedCord/blob/master/FeedCord/docs/images/webhooks.png)
 
-```yaml
-version: "3.9"
 
-services:
-  myfeedcord:
-    image: ghcr.io/kamdzy/feedcord:latest
-    container_name: FeedCord
-    restart: unless-stopped
-    volumes:
-      - ./PATH/TO/MY/JSON/FILE/appsettings.json:/app/config/appsettings.json
+### Quick Note
+
+Be sure to populate your `appsettings.json` *"DiscordWebhookUrl"* property with your newly created Webhook
+
+Before you actually run FeedCord, make sure you have populated your `appsettings.json` with RSS and YouTube feeds.
+
+**RSS Feeds**
+
+- For new users that aren't bringing their own list check out [awesome-rss-feeds](https://github.com/plenaryapp/awesome-rss-feeds) and add some that interest you
+- Each url is entered by line seperating by comma. It should look like this in your `appsettings.json` file:
+
+```json
+"RssUrls": [
+       "https://examplesrssfeed1.com/rss",
+       "https://examplesrssfeed2.com/rss",
+       "https://examplesrssfeed3.com/rss",
+     ]
 ```
 
-Replace `./PATH/TO/MY/JSON/FILE/` with the actual path to your `appsettings.json`.
+**YouTube Feeds**
 
----
+- You can bring your favorite YouTube channels as well to be notified of new uploads
+- FeedCord parses from the channel's base url so simply navigate to the channel home page and use that url.
+- Example here if I was interested in Unbox Therapy & Tyler1:
+
+***NOTE***
+
+If a YouTube link keeps failing at retrieving the RSS Link - Directly use the xml formatted YouTube link. It is more reliable.
+
+The format for that looks like: `"https://www.youtube.com/feeds/videos.xml?channel_id={YOUR_CHANNEL_ID_HERE}"`
+
+You can use online web tools like [tunepocket](https://www.tunepocket.com/youtube-channel-id-finder/?srsltid=AfmBOorSH1Ye9r1erCzY2qaqV_pUa23U8wG-DeAMAhGfGZ9dbMY5RE2j) to get the Id for the channel.
+
+```json
+"YoutubeUrls": [
+       "https://www.youtube.com/@unboxtherapy",
+       "https://www.youtube.com/@TYLER1LOL",
+       "https://www.youtube.com/feeds/videos.xml?channel_id={YOUR_CHANNEL_ID_HERE}"
+     ]
+```
 
 ### Running FeedCord
 
-In the folder you created, run the following command from your terminal:
+Now that your file is set up, you have two ways to run FeedCord
+
+### Docker (Recommended)
 
 ```
-docker-compose up -d
+docker pull qolors/feedcord:latest
+```
+Be sure to update the volume path to your `appsettings.json` 
+```
+docker run --name FeedCord -v "/path/to/your/appsettings.json:/app/config/appsettings.json" qolors/feedcord:latest
 ```
 
-This will pull the latest FeedCord image from Docker Hub and start the service.
+### Build From Source
 
-If you want to update your current image to latest it's quite simple. In your FeedCord directory run:
+Install the [.NET SDK](dotnet.microsoft.com/download)
 
+Clone this repo
 ```
-docker-compose pull
+git clone https://github.com/Qolors/FeedCord
+```
+Change Directory
+```
+cd FeedCord
+```
+Restore Dependencies
+```
+dotnet restore
+```
+Build
+```
+dotnet build
+```
+Run with your `appsettings.json` (provide your own path)
+```
+dotnet run -- path\to\your\appsettings.json
 ```
 
-followed by
-
-```
-docker-compose up -d
-```
-
-This will pull the latest image and restart your current container with it
-
----
-
-## Done
 
 With the above steps completed, FeedCord should now be running and posting updates from your RSS feeds directly to your Discord channel.
+
+<a href="https://www.buymeacoffee.com/Qolors" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Buy Me A Coffee" height="41" width="174"></a>
 
 ---
 
@@ -159,7 +161,32 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 <details>
- <summary>[2.1.2] - 2024-09-15</summary>
+ <summary>[3.0.0] - 2025-02-10</summary>
+
+### Added
+
+- Restart persistence to catch up on missed posts if it had shutdown
+- UserAgent cycling for failed get requests with retry attempts
+- Multiple retry attempts on getting a post image
+- Control over allowed concurrent HTTP requests FeedCord can make
+- Separate handling of Reddit Feeds
+- Markdown Support
+- Building from source
+
+### Changed
+
+- README
+- Large codebase refactoring
+
+### Fixed
+
+- Atom Feeds not returning a description
+- Failed posting to Discord due to title length
+
+</details>
+
+<details>
+ <summary>[2.1.2] - 2024-04-25</summary>
 
 ### Changed
 
