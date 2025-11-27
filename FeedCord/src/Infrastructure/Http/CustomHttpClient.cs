@@ -76,14 +76,15 @@ namespace FeedCord.Infrastructure.Http
                 await _throttle.WaitAsync();
 
                 var response = await _innerClient.PostAsync(url, isForum ? forumChannelContent : textChannelContent);
-                
+
                 _throttle.Release();
 
                 if (response.StatusCode != HttpStatusCode.NoContent)
                 {
-                    await _throttle.WaitAsync();
+                    var responseBody = await response.Content.ReadAsStringAsync();
+                    _logger.LogError("Discord POST failed. Status: {StatusCode}, Body: {Body}", response.StatusCode, responseBody);
 
-                    _logger.LogError("Response Error: {ResponseError}", response.Content.ReadAsStringAsync().Result);
+                    await _throttle.WaitAsync();
 
                     response = await _innerClient.PostAsync(url, !isForum ? forumChannelContent : textChannelContent);
 
@@ -94,7 +95,8 @@ namespace FeedCord.Infrastructure.Http
                     }
                     else
                     {
-                        _logger.LogError("Failed to post to Discord Channel after fallback attempts");
+                        var fallbackResponseBody = await response.Content.ReadAsStringAsync();
+                        _logger.LogError("Failed to post to Discord Channel after fallback. Status: {StatusCode}, Body: {Body}", response.StatusCode, fallbackResponseBody);
                     }
                 }
             }
